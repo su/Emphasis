@@ -88,56 +88,32 @@
                 s = {},
                 a, re, f, r, i, findp, findh, undef, hi, key, pos, b, j;
 
-            if (lh.indexOf('[')<0 && lh.indexOf(']')<0) {
-            /*  Version 1 Legacy support
-                #p20h4s2,6,10,h6s5,1 -> p = 20, h = [ 4, 6 ], s = { "4": [ 2, 6, 10 ] , "6": [ 5, 1 ] }
-            */
-                re = /[ph][0-9]+|s[0-9,]+|[0-9]/g;
-                if (lh) {
-                    while ((a = re.exec(lh)) !== null) {
-                        f = a[0].substring(0, 1);
-                        r = a[0].substring(1);
-                        if (f === 'p') {
-                            p = parseInt(r, 10);
-                        } else if (f === 'h') {
-                            h.push(parseInt(r, 10));
-                        } else {
-                            a = r.split(',');
-                            for (i = 0; i < a.length; i++) {
-                                a[i] = parseInt(a[i], 10);
-                            }
-                            s[h[h.length - 1]] = a;
-                        }
-                    }
-                }
-            } else {
             /*  Version 2
                 #h[tbsaoa,Sstaoo,2,4],p[FWaadw] -> p = "FWaadw", h = [ "tbsaoa", "Sstaoo" ], s = { "Sstaoo" : [ 2, 4 ] }
             */
-                findp = lh.match(/p\[([^[\]]*)\]/);
-                findh = lh.match(/h\[([^[\]]*)\]/);
+            findp = lh.match(/p\[([^[\]]*)\]/);
+            findh = lh.match(/h\[([^[\]]*)\]/);
 
-                p  = (findp && findp.length>0) ? findp[1] : false;
-                hi = (findh && findh.length>0) ? findh[1] : false;
+            p  = (findp && findp.length>0) ? findp[1] : false;
+            hi = (findh && findh.length>0) ? findh[1] : false;
 
-                if (hi) {
-                    hi = hi.match(/[a-zA-Z]+(,[0-9]+)*/g);
-                    for (i = 0; i < hi.length; i++) {
-                        a   = hi[i].split(',');
-                        key = a[0];
-                        pos = this.findKey(key).index;
+            if (hi) {
+                hi = hi.match(/[a-zA-Z]+(,[0-9]+)*/g);
+                for (i = 0; i < hi.length; i++) {
+                    a   = hi[i].split(',');
+                    key = a[0];
+                    pos = this.findKey(key).index;
 
-                        if (pos !== undef) {
-                            h.push(parseInt(pos, 10)+1);
-                            b = a;
-                            b.shift();
-                            if (b.length>0) {
-                                for (j=1; j<b.length; j++) {
-                                    b[j] = parseInt(b[j], 10);
-                                }
+                    if (pos !== undef) {
+                        h.push(parseInt(pos, 10)+1);
+                        b = a;
+                        b.shift();
+                        if (b.length>0) {
+                            for (j=1; j<b.length; j++) {
+                                b[j] = parseInt(b[j], 10);
                             }
-                            s[h[h.length - 1]] = b;
                         }
+                        s[h[h.length - 1]] = b;
                     }
                 }
             }
