@@ -53,7 +53,7 @@
             This uses some common markup for plain and simple paragraphs - those that are not empty, no classes.
             We use PrototypeJS for its css selector awesomeness, but your needs might be simpler (getElementsByTagName('p') etc.)
         */
-            this.paraSelctors      = document.querySelectorAll('#article-content p');
+            this.paraSelctors      = document.querySelectorAll('.post-content p');
 
         //  Class names
             this.classReady        = "emReady";
@@ -89,10 +89,10 @@
                 a, re, f, r, i, findp, findh, undef, hi, key, pos, b, j;
 
             /*  Version 2
-                #h[tbsaoa,Sstaoo,2,4],p[FWaadw] -> p = "FWaadw", h = [ "tbsaoa", "Sstaoo" ], s = { "Sstaoo" : [ 2, 4 ] }
+                #h(tbsaoa,Sstaoo,2,4(,p(FWaadw( -> p = "FWaadw", h = ( "tbsaoa", "Sstaoo" (, s = { "Sstaoo" : ( 2, 4 ) }
             */
-            findp = lh.match(/p\[([^[\]]*)\]/);
-            findh = lh.match(/h\[([^[\]]*)\]/);
+            findp = lh.match( /p\(([^[\)]*)\)/ );
+            findh = lh.match( /h\(([^[\)]*)\)/ );
 
             p  = (findp && findp.length>0) ? findp[1] : false;
             hi = (findh && findh.length>0) ? findh[1] : false;
@@ -255,7 +255,7 @@
                         if (para) {
                             key         = pl.keys[i];
                             isActive    = (key===this.p) ? (" " + this.classActiveAnchor) : "";
-                            para.innerHTML = "<span class='" + this.classInfo + "'><a class='"+ this.classAnchor + isActive + "' href='#p[" + key + "]' data-key='" + key + "' title='Link to " + this.ordinal(i+1) + " paragraph'>&para;</a></span>" + para.innerHTML;
+                            para.innerHTML = "<span class='" + this.classInfo + "'><a class='"+ this.classAnchor + isActive + "' href='#p(" + key + ")' data-key='" + key + "' title='Link to " + this.ordinal(i+1) + " paragraph'>&para;</a></span>" + para.innerHTML;
                         }
                     }
                 }
@@ -278,7 +278,7 @@
 
         updateURLHash: function() {
         /*  Scan the Paragraphs, note selections, highlights and update the URL with the new Hash */
-            var h = "h[",
+            var h = "h(",
                 paras = document.querySelectorAll('p.emReady'),
                 pLen  = paras.length,
                 p, key, spans, sLen, nSent, anchor, hash,s;
@@ -302,8 +302,12 @@
                 }
             }
 
-            anchor  = ((this.p) ? "p[" + this.p + "]," : "");
-            hash    = (anchor + (h.replace("h[,", "h[") + "]")).replace(",h[]", "").replace("h[]", "");
+            anchor  = ((this.p) ? "p(" + this.p + ")," : "");
+            //hash    = (anchor + (h.replace("h(,", "h(") + "]")).replace(",h()", "").replace("h()", "");
+            //hash    = (anchor + (h.replace("h[,", "h[") + "]")).replace(",h[]", "").replace("h[]", "");
+            hash    = (anchor + (h.replace("h(,", "h(") + ")"))
+            .replace(",h()", "")
+            .replace("h()", "");
 
             location.hash = hash;
         },
